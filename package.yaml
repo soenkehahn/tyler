@@ -1,0 +1,12 @@
+name: tyler
+
+executables:
+  tyler:
+    main: Main.hs
+    source-dirs:
+      - src
+    dependencies:
+      - base
+      - shake
+    other-modules:
+      - Main
