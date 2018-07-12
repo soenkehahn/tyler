@@ -7,16 +7,13 @@ import Development.Shake
 import Control.Arrow
 import Data.Foldable
 import Window
+import Layout
 
 main :: IO ()
 main = do
   desktop <- getCurrentDesktop
-  size@(width, height) <- getScreenSize
-  forM_ (zip (windows desktop) [0 ..]) $ \ (window, i) -> do
-    let windowWidth = 300
-    setWindowSize window (windowWidth, height)
-    let x = i * windowWidth
-    setWindowPosition window (x, 0)
+  size <- getScreenSize
+  mapM_ activateProperties $ layout size desktop
 
 getScreenSize :: IO (Int, Int)
 getScreenSize = do

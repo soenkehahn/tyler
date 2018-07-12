@@ -1,10 +1,20 @@
 name: tyler
 
+dependencies:
+  - base
+  - shake
+
 executables:
   tyler:
     main: Main.hs
     source-dirs:
       - src
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - tests
+      - src
     dependencies:
-      - base
-      - shake
+      - hspec

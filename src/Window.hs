@@ -19,11 +19,12 @@ getCurrentDesktop = do
   Stdout (read -> desktop :: Int) <- cmd "xdotool get_desktop"
   Stdout (lines >>> map read -> windows :: [Int]) <-
     cmd "xdotool search --desktop" (show desktop) "."
-  return $ Desktop desktop (map Window windows)
+      (EchoStderr False)
+  return $ Desktop desktop (map Window (reverse windows))
 
 data Window
   = Window Int
-  deriving Show
+  deriving (Eq, Show)
 
 setWindowSize :: Window -> (Int, Int) -> IO ()
 setWindowSize (Window id) (width, height) = do
