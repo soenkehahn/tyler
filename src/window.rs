@@ -1,4 +1,5 @@
 use util::{cmd, AppError};
+use {SCREEN_FRAME_HEIGHT, WINDOW_FRAME_HEIGHT, WINDOW_FRAME_WIDTH};
 
 #[derive(Debug)]
 pub struct Desktop {
@@ -34,8 +35,8 @@ pub fn set_window_size(Window(id): Window, (width, height): (i32, i32)) -> Resul
         vec![
             "windowsize",
             &id.to_string(),
-            &width.to_string(),
-            &height.to_string(),
+            &(width - WINDOW_FRAME_WIDTH).to_string(),
+            &(height - WINDOW_FRAME_HEIGHT).to_string(),
         ],
     )?;
     Ok(())
@@ -47,8 +48,8 @@ pub fn set_window_position(Window(id): Window, (x, y): (i32, i32)) -> Result<(),
         vec![
             "windowmove",
             &id.to_string(),
-            &x.to_string(),
-            &y.to_string(),
+            &(x + WINDOW_FRAME_WIDTH).to_string(),
+            &(y + SCREEN_FRAME_HEIGHT + WINDOW_FRAME_HEIGHT).to_string(),
         ],
     )?;
     Ok(())
