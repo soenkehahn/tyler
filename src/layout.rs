@@ -1,4 +1,4 @@
-use util::AppError;
+use util::{cmd, AppError};
 use window::{set_window_position, set_window_size, Desktop, Window};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -15,6 +15,16 @@ pub fn activate_property(
         position,
     }: WindowWithProperties,
 ) -> Result<(), AppError> {
+    cmd(
+        "wmctrl",
+        vec![
+            "-i",
+            "-r",
+            &window_id.id.to_string(),
+            "-b",
+            "remove,maximized_vert,maximized_horz",
+        ],
+    )?;
     set_window_size(window_id, size)?;
     set_window_position(window_id, position)
 }
@@ -68,7 +78,7 @@ mod test {
                 (1000, 500),
                 Desktop {
                     desktop: 0,
-                    windows: vec![Window(23)],
+                    windows: vec![Window { id: 23 }],
                 },
             );
             *foo.get(0).unwrap()
@@ -76,7 +86,7 @@ mod test {
 
         #[test]
         fn positions_the_active_window_at_0_0() {
-            assert_eq!(first_window().window_id, Window(23));
+            assert_eq!(first_window().window_id, Window { id: 23 });
             assert_eq!(first_window().position, (0, 0));
         }
 
@@ -99,7 +109,7 @@ mod test {
                 (1000, 500),
                 Desktop {
                     desktop: 0,
-                    windows: vec![Window(23), Window(42), Window(51)],
+                    windows: vec![Window { id: 23 }, Window { id: 42 }, Window { id: 51 }],
                 },
             ).into_iter()
                 .skip(1)
@@ -121,7 +131,7 @@ mod test {
                 .into_iter()
                 .map(|x| x.window_id)
                 .collect();
-            assert_eq!(ids, vec![Window(42), Window(51)]);
+            assert_eq!(ids, vec![Window { id: 42 }, Window { id: 51 }]);
             let ys: Vec<i32> = inactive_windows()
                 .into_iter()
                 .map(|x| x.position.1)

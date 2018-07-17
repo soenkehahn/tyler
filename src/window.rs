@@ -14,7 +14,9 @@ pub fn get_current_desktop() -> Result<Desktop, AppError> {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
-pub struct Window(pub i32);
+pub struct Window {
+    pub id: i32,
+}
 
 fn get_windows(desktop: i32) -> Result<Vec<Window>, AppError> {
     let output = cmd(
@@ -23,13 +25,13 @@ fn get_windows(desktop: i32) -> Result<Vec<Window>, AppError> {
     )?;
     let mut windows: Vec<Window> = vec![];
     for line in output.trim().split("\n") {
-        windows.push(Window(line.parse()?));
+        windows.push(Window { id: line.parse()? });
     }
     windows.reverse();
     Ok(windows)
 }
 
-pub fn set_window_size(Window(id): Window, (width, height): (i32, i32)) -> Result<(), AppError> {
+pub fn set_window_size(Window { id }: Window, (width, height): (i32, i32)) -> Result<(), AppError> {
     cmd(
         "xdotool",
         vec![
@@ -42,7 +44,7 @@ pub fn set_window_size(Window(id): Window, (width, height): (i32, i32)) -> Resul
     Ok(())
 }
 
-pub fn set_window_position(Window(id): Window, (x, y): (i32, i32)) -> Result<(), AppError> {
+pub fn set_window_position(Window { id }: Window, (x, y): (i32, i32)) -> Result<(), AppError> {
     cmd(
         "xdotool",
         vec![
